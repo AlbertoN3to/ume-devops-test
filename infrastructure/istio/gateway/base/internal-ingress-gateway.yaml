@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-internal-ingressgateway
+  namespace: istio-ingress
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"  
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    istio: internal-ingressgateway
+  ports:
+  - port: 80
+    name: http
+  - port: 443
+    name: https
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-internal-ingressgateway
+  namespace: istio-ingress
+  labels:
+    app: "gateway"
+spec:
+  selector:
+    matchLabels:
+      istio: internal-ingressgateway
+  template:
+    metadata:
+      annotations:
+        # Select the gateway injection template (rather than the default sidecar template)
+        inject.istio.io/templates: gateway
+      labels:
+        # Set a unique label for the gateway. This is required to ensure Gateways can select this workload
+        istio: internal-ingressgateway
+        # Enable gateway injection. If connecting to a revisioned control plane, replace with "istio.io/rev: revision-name"
+        sidecar.istio.io/inject: "true"
+        app: "gateway"
+    spec:
+      containers:
+      - name: istio-proxy
+        image: auto # The image will automatically update each time the pod starts.

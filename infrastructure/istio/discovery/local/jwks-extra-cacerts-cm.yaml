@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: istiod
+    install.operator.istio.io/owning-resource: unknown
+    istio.io/rev: default
+    operator.istio.io/component: Pilot
+    release: istiod
+  name: pilot-jwks-extra-cacerts
+  namespace: istio-system
+data:
+  extra.pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIDYzCCAkugAwIBAgIRALhe01btYAu5P5jpfNHYkD4wDQYJKoZIhvcNAQELBQAw
+    MjEMMAoGA1UEChMDdW1lMSIwIAYDVQQDExlsb2NhbC5pbnRlcm5hbC51bWUuY29t
+    LmJyMB4XDTIyMTIyODE5NDU0N1oXDTIzMDMyODE5NDU0N1owMjEMMAoGA1UEChMD
+    dW1lMSIwIAYDVQQDExlsb2NhbC5pbnRlcm5hbC51bWUuY29tLmJyMIIBIjANBgkq
+    hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsNV7dmwmUFxTL6fCvfTEIriWSimWXAfX
+    +arm3otUP6Ug622lYnATrJvGB9EL/DmOXMtL7gJyLY/Tc7sajxuekvSnIgswqW8O
+    wOAPINneAaln6B8D620hNyDgaRrh8551X87E/kOhWIAR7T7+tlkFpk1ebN385REr
+    RRyrjnlN/KRt1hQCpVRk/3EB5UIHxSSI220OcQp8FyVuSdEtGxa64DHhVVOu4NYV
+    +yr+LkRrLAQuZFLt5j0W1TJt68AnKhiML+yJcRkuROHCxJ1YmGycLdTxsEfNU37X
+    Zb3ArMbASH0IibGXfYCTaD+zuWGql9wCxknFOyOgGjqpFIMjNCPS4wIDAQABo3Qw
+    cjAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADBD
+    BgNVHREEPDA6ghlsb2NhbC5pbnRlcm5hbC51bWUuY29tLmJygh13d3cubG9jYWwu
+    aW50ZXJuYWwudW1lLmNvbS5icjANBgkqhkiG9w0BAQsFAAOCAQEAR6Oici8IALup
+    E7IHACk9ThL7nqF1eG5wjXbhcQN+ZRlE3jzmP0Inf/rpJmscJoTtK8uLgA5UwkWB
+    lqdZJqGMAUBKA7gcJa7/75Y6H/vJs8QLwHzlGPJQZKXd0roKDsEcKkoY9vvu6Jmn
+    jEq4Uwhzj8pMMjmP/dRU0SBWqSzJhWsQLaNBBWYT3Eavb0nC0RZ1d0vTKm4fzZHD
+    LGFfZuRI0h5H9ptQsWZ87uXLPRxpx9qWE6xl9fYxW+fgFkKhsg5aBFLR5MCOnuUX
+    LlGR4w4cemLupEymxlJLYncHCoKUkmsv8hS7V2DLw72Qk7j+I/C00rVJaXgad4m6
+    KGHK/6Bc8Q==
+    -----END CERTIFICATE-----

@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istiod
+  namespace: istio-system
+spec:
+  template:
+    spec:
+      containers:
+        - name: discovery
+          volumeMounts:
+            - mountPath: /cacerts
+              name: extracacerts
+      volumes:
+        - configMap:
+            name: pilot-jwks-extra-cacerts
+          name: extracacerts

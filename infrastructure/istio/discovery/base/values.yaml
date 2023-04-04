@@ -1,0 +1,6 @@
+#.Values.pilot for discovery and mesh wide config
+# complte values https://github.com/istio/istio/blob/master/manifests/charts/istio-control/istio-discovery/values.yaml
+## Discovery Settings
+
+meshConfig:
+  rootNamespace: istio-system

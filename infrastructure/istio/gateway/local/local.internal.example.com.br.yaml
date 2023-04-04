@@ -1,0 +1,27 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: local-internal-ume-com-br-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: internal-ingressgateway # use istio default ingress gateway
+  servers:
+    - hosts:
+        - 'local.internal.example.com.br'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: local-internal-ume-com-br # must be the same as secret that is on istio-ingress ns
+      hosts:
+        - local.internal.example.com.br

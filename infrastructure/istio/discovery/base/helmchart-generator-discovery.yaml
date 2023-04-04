@@ -1,0 +1,10 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: "istio-discovery"
+name: "istiod"
+repo: https://istio-release.storage.googleapis.com/charts
+releaseName: "istiod"
+namespace: "istio-system"
+IncludeCRDs: true
+valuesFile: values.yaml
