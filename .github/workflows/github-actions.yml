@@ -13,8 +13,8 @@ jobs:
 
     - name: Build and Test App1
       run: |
-        go build -o app1
-        go test ./...
+        go build -o app-1/main
+        go test ./app-1/main
 
     - name: Build Docker Image and Push to Registry
       run: |
@@ -29,8 +29,8 @@ jobs:
 
     - name: Build and Test App2
       run: |
-        go build -o app2
-        go test ./...
+        go build -o app-2/main
+        go test ./app-2/main
 
     - name: Build Docker Image and Push to Registry
       run: |
