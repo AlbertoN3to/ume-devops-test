@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  labels:
+    app: app1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - name: app1
+        image: nerocrescend/app1:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: "/mnt/config"
+          readOnly: true
+        # env:
+        # - name: ISSUER
+        #   value: "https://accounts.google.com"
+        # - name: JWKS_URL
+        #   value: "https://www.googleapis.com/oauth2/v3/certs"
+        # - name: AUDIENCE
+        #   value: "app1"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: app1-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+  labels:
+    app: app1
+spec:
+  selector:
+    app: app1
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app1-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app1-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app1-gateway
+  http:
+  - match:
+    - uri:
+        exact: /hello
+    route:
+    - destination:
+        host: app1
+        port:
+          number: 8080
+    # - headers:
+    #     authorization:
+    #       exact: "Bearer some_valid_jwt_token"
+      match:
+      - uri:
+          exact: /api/v1/ping
+      route:
+      - destination:
+          host: app1
+          port:
+            number: 8080
