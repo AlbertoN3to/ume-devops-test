@@ -16,6 +16,61 @@ spec:
     spec:
       containers:
         - name: app2
-          image: nerocrescend/app2:latest
+          image: nerocrescend/app-2:latest
           ports:
             - containerPort: 9090
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2
+  labels:
+    app: app2
+spec:
+  selector:
+    app: app2
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app2-internal-gateway
+spec:
+  selector:
+    istio: internal-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app2-virtual-internal-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app2-internal-gateway
+  http:
+  - name: "app2-internal-routes"
+    match:
+    - uri:
+        prefix: /api/v1/pong
+    route:
+    - destination:
+        host: app2
+        port:
+          number: 9090
+  

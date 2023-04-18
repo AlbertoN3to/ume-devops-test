@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app1
-        image: nerocrescend/app1:latest
+        image: nerocrescend/app-1:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -35,6 +35,8 @@ spec:
       - name: config-volume
         configMap:
           name: app1-configmap
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: v1
 kind: Service
@@ -65,6 +67,22 @@ spec:
       protocol: HTTP
     hosts:
     - "*"
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: app1-internal-gateway
+spec:
+  selector:
+    istio: internal-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -76,22 +94,67 @@ spec:
   gateways:
   - app1-gateway
   http:
-  - match:
+  - name: "test-routes"
+    match:
+      - uri:
+          prefix: /hello
+    route:
+      - destination:
+          host: app1
+          port:
+            number: 8080
+    # - headers:
+    #     authorization:
+    #       exact: "Bearer some_valid_jwt_token"
+  - name: "test-routes-2"
+    match:
     - uri:
-        exact: /hello
+        prefix: /api/v1/ping
     route:
     - destination:
         host: app1
         port:
           number: 8080
-    # - headers:
-    #     authorization:
-    #       exact: "Bearer some_valid_jwt_token"
-      match:
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app1-virtual-internal-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - app1-internal-gateway
+  http:
+  - name: "test-internal-routes"
+    match:
       - uri:
-          exact: /api/v1/ping
-      route:
+          prefix: /hello
+    route:
       - destination:
           host: app1
           port:
             number: 8080
+    # - headers:
+    #     authorization:
+    #       exact: "Bearer some_valid_jwt_token"
+  - name: "test-internal-routes-2"
+    match:
+    - uri:
+        prefix: /api/v1/ping
+    route:
+    - destination:
+        host: app1
+        port:
+          number: 8080
+  
+  - name: "test-internal-routes-3"
+    match:
+      - uri:
+          prefix: /header
+    route:
+      - destination:
+          host: app1
+          port:
+            number: 8080
+
