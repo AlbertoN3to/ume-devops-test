@@ -13,8 +13,10 @@ jobs:
 
     - name: Build and Test App1
       run: |
-        go build -o app-1/main
-        go test ./app-1/main
+        cd app-1/main
+        go build -o app1
+        go test ./...
+        cd ../..
 
     - name: Build Docker Image and Push to Registry
       run: |
@@ -29,9 +31,11 @@ jobs:
 
     - name: Build and Test App2
       run: |
-        go build -o app-2/main
-        go test ./app-2/main
-
+        cd app-2/main
+        go build -o app2
+        go test ./...
+        cd ../..
+        
     - name: Build Docker Image and Push to Registry
       run: |
         docker build -t nerocrescend/app-2:$GITHUB_SHA .
